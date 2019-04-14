@@ -14,38 +14,48 @@ import io.circe.syntax._
 package object account {
 
   sealed trait AccountStatus
-  case object Onboarding       extends AccountStatus
+
+  case object Onboarding extends AccountStatus
+
   case object SubmissionFailed extends AccountStatus
-  case object Submitted        extends AccountStatus
-  case object AccountUpdated   extends AccountStatus
-  case object ApprovalPending  extends AccountStatus
-  case object Active           extends AccountStatus
-  case object Rejected         extends AccountStatus
+
+  case object Submitted extends AccountStatus
+
+  case object AccountUpdated extends AccountStatus
+
+  case object ApprovalPending extends AccountStatus
+
+  case object Active extends AccountStatus
+
+  case object Rejected extends AccountStatus
 
   object AccountStatus {
 
-    implicit val accountStatusEncoder: Encoder[AccountStatus] = Encoder.instance {
-      case onboarding       @ Onboarding       => onboarding.asJson
-      case submissionFailed @ SubmissionFailed => submissionFailed.asJson
-      case submitted        @ Submitted        => submitted.asJson
-      case accountUpdated   @ AccountUpdated   => accountUpdated.asJson
-      case approvalPending  @ ApprovalPending  => approvalPending.asJson
-      case active           @ Active           => active.asJson
-      case rejected         @ Rejected         => rejected.asJson
-    }
+    implicit val accountStatusEncoder: Encoder[AccountStatus] =
+      Encoder.instance {
+        status => status match {
+            case Onboarding => status.asJson
+            case SubmissionFailed => status.asJson
+            case Submitted => status.asJson
+            case AccountUpdated => status.asJson
+            case ApprovalPending => status.asJson
+            case Active => status.asJson
+            case Rejected => status.asJson
+        }
+      }
 
     implicit val accountStatusDecoder: Decoder[AccountStatus] =
-      List[Decoder[AccountStatus]] (
-          Decoder[Onboarding].widen,
-          Decoder[SubmissionFailed].widen,
-          Decoder[Submitted].widen,
-          Decoder[AccountUpdated].widen,
-          Decoder[ApprovalPending].widen,
-          Decoder[Active].widen,
-          Decoder[Rejected].widen
+      List[Decoder[AccountStatus]](
+        Decoder[Onboarding.type].widen,
+        Decoder[SubmissionFailed.type].widen,
+        Decoder[Submitted.type].widen,
+        Decoder[AccountUpdated.type].widen,
+        Decoder[ApprovalPending.type].widen,
+        Decoder[Active.type].widen,
+        Decoder[Rejected.type].widen
       ).reduceLeft(_ or _)
 
-    implicit val AccountStatusEntityDecoder = jsonOf[IO, AccountStatus]
+    implicit val AccountStatusEntityDecoder: EntityDecoder[IO, AccountStatus] = jsonOf
   }
 
   case class Account(
@@ -64,7 +74,7 @@ package object account {
                     )
 
   object Account {
-    implicit val AccountDecoder: EntityDecoder[IO, Account] = jsonOf[IO, Account]
+    implicit val AccountDecoder: EntityDecoder[IO, Account] = jsonOf
   }
 
 }
