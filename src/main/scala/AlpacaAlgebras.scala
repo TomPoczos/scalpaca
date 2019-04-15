@@ -1,7 +1,6 @@
 import java.time.LocalDateTime
 
-import cats.effect.IO
-import model.account.Account
+import model.Account
 import model.order._
 
 package object AlpacaAlgebras {

@@ -5,7 +5,7 @@ version := "0.1"
 //scalaVersion := "2.12.4"
 scalaVersion := "2.12.8"
 
-scalacOptions += "-Ypartial-unification"
+scalacOptions ++= Seq("-Ypartial-unification", "-unchecked", "-deprecation")
 
 updateOptions := updateOptions.value.withCachedResolution(true)
 
