@@ -11,27 +11,26 @@ import scala.concurrent.ExecutionContext.Implicits.global
 object AlpacaIOAlgebras {
 
 
-  private val baseURI = uri"https://paper-api.alpaca.markets"
+  private val baseURI = uri"https://paper-api.alpaca.markets/v2"
 
   private implicit val cs: ContextShift[IO] = IO.contextShift(global)
 
-  private implicit val AccountEntityDecoder: EntityDecoder[IO, Account] = jsonOf
-  private implicit val AccountStatusEntityDecoder: EntityDecoder[IO, AccountStatus] = jsonOf
+  def request(endpoint: String) = Request[IO](
+    uri = baseURI / endpoint,
+    httpVersion = HttpVersion.`HTTP/2.0`,
+    headers = Headers.of(
+      Header("APCA-API-KEY-ID", Secrets.keyId),
+      Header("APCA-API-SECRET-KEY", Secrets.key),
+    )
+  )
 
+  class IOAccountAlg(implicit val clientResource: Resource[IO, Client[IO]]) extends AccountAlg[IO] {
 
-  class IOAccountAlg(val clientResource: Resource[IO, Client[IO]]) extends AccountAlg[IO] {
+    private implicit val AccountEntityDecoder: EntityDecoder[IO, Account] = jsonOf
+    private implicit val AccountStatusEntityDecoder: EntityDecoder[IO, AccountStatus] = jsonOf
     
     override def getAccount: IO[Account] = clientResource.use { client =>
-      client.expect[Account](
-        Request[IO](
-          uri = baseURI / "v1/account",
-          httpVersion = HttpVersion.`HTTP/2.0`,
-          headers = Headers.of(
-            Header("APCA-API-KEY-ID", Secrets.keyId),
-            Header("APCA-API-SECRET-KEY", Secrets.key),
-          )
-        )
-      )
+      client.expect[Account](request("account"))
     }
   }
 }
