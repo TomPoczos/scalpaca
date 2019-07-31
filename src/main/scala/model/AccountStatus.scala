@@ -11,7 +11,7 @@ case object SubmissionFailed extends AccountStatus
 case object Submitted        extends AccountStatus
 case object AccountUpdated   extends AccountStatus
 case object ApprovalPending  extends AccountStatus
-case object Active           extends AccountStatus
+case object ActiveAccount    extends AccountStatus
 case object Rejected         extends AccountStatus
 
 object AccountStatus {
@@ -24,7 +24,7 @@ object AccountStatus {
         case Submitted        => status.asJson
         case AccountUpdated   => status.asJson
         case ApprovalPending  => status.asJson
-        case Active           => status.asJson
+        case ActiveAccount    => status.asJson
         case Rejected         => status.asJson
       }
     }
@@ -36,7 +36,7 @@ object AccountStatus {
       Decoder[Submitted.type].widen,
       Decoder[AccountUpdated.type].widen,
       Decoder[ApprovalPending.type].widen,
-      Decoder[Active.type].widen,
-      Decoder[Rejected.type].widen
+      Decoder[ActiveAccount.type].widen,
+      Decoder[Rejected.type].widen,
     ).reduceLeft(_ or _)
 }

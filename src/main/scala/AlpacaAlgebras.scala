@@ -1,15 +1,17 @@
 import java.time.LocalDateTime
 
-import model.Account
+import model.{Account, Asset}
 import model.order._
 
 package object AlpacaAlgebras {
 
   trait AccountAlg[F[_]] {
-    def getAccount: F[Account]
+    def account: F[Account]
   }
 
-
+  trait AssetAlg[F[_]] {
+    def assets: F[List[Asset]]
+  }
 
 
   trait OrderAlg[F[_]] {

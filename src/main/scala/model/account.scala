@@ -35,7 +35,7 @@ case class Account(
 
 object Account {
 
-  implicit val decodeAccount: Decoder[Account] = new Decoder[Account] {
+  implicit val accountDecoder: Decoder[Account] = new Decoder[Account] {
     override def apply(c: HCursor): Result[Account] = for {
       accountBlocked                <- c.downField("account_blocked")        .as[Boolean]
       buyingPower                   <- c.downField("buying_power")           .as[String].map { _.toDouble }
