@@ -11,8 +11,10 @@ object Main extends IOApp {
   override def run(args: List[String]): IO[ExitCode] = for {
     acc            <- new IOAccountAlg().account
     assets         <- new IOAssetAlg().assets
+    assetClasses   <- IO(assets.map(_.assetClass).distinct)
     _              <- IO(println(acc))
     _              <- IO(println(assets))
+    _              <- IO(println(assetClasses))
   } yield ExitCode.Success
 }
 
